@@ -1,0 +1,44 @@
+<?php
+    include_once '../includes/db_connect.php';
+    include_once '../includes/functions.php';
+    sec_session_start();
+    /**************************************************************************
+    **********************ACCEPTING THE INFORMATION****************************
+    **************************************************************************/
+    $sub_center = $_POST['sub_center'];
+    $phc = $_POST['phc'];
+    $applicant_name = $_POST['applicant_name'];
+    $husband = $_POST['husband_name'];
+    $address = $_POST['address'];
+    $area = $_POST['area'];
+    $card = $_POST['card'];
+    $bpl_card_no = $_POST['bpl_card_no'];
+    $temp_time = strtotime($_POST['date']);
+    $date = date('Y-m-d', $temp_time);
+    $reg_no = $_POST['registration_no'];
+    $age = $_POST['age'];
+    $imp = $_POST['imp'];
+    $edd = $_POST['edd'];
+    $para = $_POST['para'];
+    $gravida = $_POST['gravida'];
+    $health_inst = $_POST['health_inst'];
+    $date_of_application = date_create()->format('Y-m-d');
+    /**************************************************************************
+    ***********************TESTING THE INFORMATION*****************************
+    **************************************************************************/
+    
+    /*echo "Sub Center : $sub_center<br>PHC: $phc<br>Applicant Name: $applicant_name<br>Husband: $husband<br>Address: $address<br>Area: $area<br>Card: $card<br>BPL Card No: $bpl_card_no<br>Date: $date<br>Reg No: $reg_no<br>Age: $age<br>IMP: $imp<br>EDD: $edd<br>Para: $para<br>Gravida: $gravida<br>Health Inst: $health_inst<br>Date of Application: $date_of_application";*/
+
+    /**************************************************************************
+    *******************INSERTING THE INFORMATION IN DB*************************
+    **************************************************************************/
+    if ($insert_stmt = $mysqli->prepare("INSERT INTO jsy(sub_center, phc, applicant_name, husband_name, address, area, card, bpl_card_no, dor, registration_no, age, imp, edd, para, gravida, health_inst, doa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )")) 
+    {
+        $insert_stmt->bind_param('sssssssssddssssss', $sub_center, $phc, $applicant_name, $husband, $address, $area, $card, $bpl_card_no, $date, $reg_no, $age, $imp, $edd, $para, $gravida, $health_inst, $date_of_application);
+        // Execute the prepared query.
+        if (! $insert_stmt->execute()) 
+        {
+            header('Location: ../error.php?err=Registration failure: JSY');
+        }
+    }
+?>
